@@ -1,0 +1,74 @@
+# Japan Alert Decoder
+
+> Free, keyless decoder for Japanese emergency alerts: what an alert means, its alert level, what to do now (by situation) and its official name in 14 languages. Covers 緊急地震速報 Earthquake Early Warning (warning / forecast / cancellation), shindo, tsunami (大津波警報 / 津波警報 / 津波注意報), the new level-named weather warnings in force since 2026-05-29 (Level 5 特別警報 Emergency Warning, Level 4 危険警報 Urgent Warning, Level 3 警報 Warning, Level 2 注意報 Advisory for 大雨 heavy rain, 土砂災害 landslide, 氾濫 flood, 高潮 storm surge; Level 1 早期注意情報) and the old names they replaced, other weather warnings, 気象防災速報 (線状降水帯), municipal evacuation levels (緊急安全確保 / 避難指示 / 高齢者等避難), Nankai Trough Earthquake Extra Information, the Hokkaido-Sanriku Subsequent Earthquake Advisory, volcanic alert levels, J-ALERT missile alerts and heat-stroke alerts. Data as of 2026-10-17. Educational guide, not an alert service: no live data; always follow official instructions.
+
+Site: https://japan-alert-decoder.vercel.app
+
+## Key facts (official sources below)
+- Since 2026-05-29 (JMA "new disaster weather information") warnings carry the level in their name: e.g. 土砂災害警戒情報 → レベル4土砂災害危険警報 "Level 4 Urgent Warning (Landslide)"; 大雨警報（土砂災害） → レベル3土砂災害警報; 大雨警報（浸水害） → レベル3大雨警報; 洪水警報 / 洪水注意報 are no longer issued (merged into 大雨, plus 氾濫 for named rivers); 氾濫発生情報 → レベル5氾濫特別警報; 氾濫危険情報 → レベル4氾濫危険警報; old 高潮警報 (Level 4) → レベル4高潮危険警報, while レベル3高潮警報 is now Level 3.
+- Colours: Level 5 black, 4 purple, 3 red, 2 yellow, 1 white. Evacuate by Level 4. Municipal info: L5 緊急安全確保 Emergency Safety Measures, L4 避難指示 Evacuation Instruction, L3 高齢者等避難 Evacuation of the Elderly, etc.
+- 気象防災速報 replaced 記録的短時間大雨情報, 顕著な大雨に関する気象情報 (now 線状降水帯発生), 竜巻注意情報 and 顕著な大雪に関する気象情報; new 線状降水帯直前予測.
+- EEW warning: 2+ stations, predicted max intensity 5-lower+ (or long-period class 3+); names areas expecting 4+. Act: protect your head, take cover, don't rush outside; train: hold the strap; driving: hazard lights, slow down gradually, stop on the left; elevator: stop at the nearest floor.
+- 2026-10-16 12:40 JST: a false EEW (warning) for Hokkaido-Chubu (estimated M9.9 near the Kuril Islands) was cancelled; JMA said its 700 km station-exclusion filter had failed, fixed it about 21:30 and apologised. 「先ほど発表した緊急地震速報を取り消します」 = "JMA has cancelled the EEW."
+- Tsunami: 大津波警報 >3 m (5 m / 10 m / >10 m / 巨大), 津波警報 1-3 m (3 m / 高い): evacuate immediately to high ground; 津波注意報 0.2-1 m: leave the water and coast.
+- Nankai Trough Extra Information: 調査中 (5-30 min after M6.8+), then 巨大地震警戒 (one week of pre-evacuation for some coastal residents), 巨大地震注意 (no pre-evacuation; re-check preparedness) or 調査終了.
+- J-ALERT missile: go into a sturdy building or underground; if none, take cover or lie flat protecting your head; indoors, away from windows.
+
+## API (free, no key, CORS open)
+
+### GET
+GET https://japan-alert-decoder.vercel.app/api/decode?text=緊急地震速報 強い揺れに備えてください&situation=train
+→ verdict "decoded", urgency "act_now", primary {id "eew-warning", nameJa, nameEn, meaning, doNow (train first: hold the strap), dont, howLong, note, sources}
+
+GET https://japan-alert-decoder.vercel.app/api/decode?text=土砂災害警戒情報&lang=vi
+→ primary l4-landslide "Level 4 Urgent Warning (Landslide)", nameLocal (Vietnamese, from the JMA dictionary), color purple, renamed [old name note]
+
+GET https://japan-alert-decoder.vercel.app/api/decode?alert=tsunami-advisory&situation=coast&lang=ko
+
+Params: text (alert text, Japanese or English, up to 4,000 chars); alert (id from /api/rules, e.g. eew-warning, eew-cancel, major-tsunami-warning, l4-landslide, l5-heavy-rain, evac-l4, bulletin-linear-rainband, nankai-megaquake-advisory, missile, heat-alert, volcano-l3); situation (indoors, outdoors, driving, train, elevator, crowd, coast, mountain); lang (ja, en, zh-CN, zh-TW, ko, pt, es, id, vi, tl, th, ne, km, my, mn). Returns verdict, headline, urgency, primary, also, modifiers {cancelled, lifted, drill}, extracted {level, shindo, tsunamiHeight}, renamed, notes, checkLive (official live maps), dataAsOf, sources. /api/check is an alias.
+
+### POST
+POST https://japan-alert-decoder.vercel.app/api/decode
+Content-Type: application/json
+```json
+{"text": "【警戒レベル4】避難指示 発令", "situation": "indoors", "lang": "zh-CN"}
+```
+
+### All alert types, old→new names, shindo and tsunami tables, sources
+GET https://japan-alert-decoder.vercel.app/api/rules
+
+### Discovery
+- OpenAPI 3.1: https://japan-alert-decoder.vercel.app/openapi.json
+- Plugin manifest: https://japan-alert-decoder.vercel.app/.well-known/ai-plugin.json
+- MCP tool `japan_emergency_alert_decode` on https://free-agent-tools.vercel.app/mcp
+
+## Shareable alert pages
+- https://japan-alert-decoder.vercel.app/r?a=eew-warning&s=train
+- https://japan-alert-decoder.vercel.app/r?a=l4-landslide
+- https://japan-alert-decoder.vercel.app/r?a=tsunami-warning
+- Preview image: https://japan-alert-decoder.vercel.app/og?a=l4-landslide
+
+## Sources
+- https://www.jma.go.jp/jma/kishou/know/bosai/keiho-update2026/index.html (JMA new disaster weather information, from 2026-05-29)
+- https://www.jma.go.jp/jma/kishou/know/bosai/keiho-update2026/pdf/english_info2026.pdf (official English names)
+- https://www.jma.go.jp/jma/kishou/know/jishin/eew/index.html (Earthquake Early Warning)
+- https://www.jma.go.jp/jma/press/2610/16c/202610161730.html (2026-10-16 false EEW report)
+- https://www.data.jma.go.jp/eqev/data/joho/tsunamiinfo.html (tsunami warnings)
+- https://www.data.jma.go.jp/developer/multilingual.html (JMA multilingual dictionary, 2026-03-26)
+- https://www.bousai.go.jp/jishin/nankai/rinji/index4.html (Nankai Trough Extra Information, Cabinet Office)
+- https://www.kokuminhogo.go.jp/en/pc-index_e.html (J-ALERT, Cabinet Secretariat)
+- Full list: /api/rules
+
+## Disclaimer
+Educational guide, not an alert service and not official: no live data. Always follow official instructions (JMA, your municipality, police, fire, staff). In an emergency, protect yourself first. Not affiliated with JMA or any government agency.
+
+## Other free tools by the same maker
+- Japan Tax-Free Refund Checker: https://japan-tax-free-refund.vercel.app
+- Japan Customs Allowance Checker: https://japan-customs-allowance.vercel.app
+- Japan Luggage Check: https://japan-luggage.vercel.app
+- Kyushu Travel Discount Calculator: https://kyushu-travel-discount.vercel.app
+- Japan Visa Fee Calculator: https://japan-visa-fee.vercel.app
+- Japan TB Screening Check: https://japan-tb-screening.vercel.app
+- Japan Dual Pricing Check: https://japan-dual-pricing.vercel.app
+- Japan Trip Brain: https://japan-trip-brain.vercel.app
+- Free Agent Tools MCP: https://free-agent-tools.vercel.app

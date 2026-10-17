@@ -1,0 +1,31 @@
+{
+  "name": "japan-alert-decoder",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Free decoder for Japanese emergency alerts (緊急地震速報 EEW, tsunami warnings, the new level-named weather warnings from 2026-05-29, evacuation levels, Nankai Trough info, J-ALERT, volcano, heat): what it means, the alert level, what to do, official names in 14 languages, with a keyless JSON API.",
+  "license": "MIT",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "test": "node --import tsx --test lib/alerts.test.ts lib/api.test.ts lib/share.test.ts"
+  },
+  "dependencies": {
+    "@vercel/analytics": "^2.0.1",
+    "next": "^16.3.5",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "^16.3.5",
+    "tailwindcss": "^4",
+    "tsx": "^4.23.15",
+    "typescript": "^5"
+  }
+}
