@@ -96,7 +96,7 @@ export default function HomePage() {
         <h1 className="mt-3 font-display text-4xl leading-[1.05] tracking-tight sm:text-6xl">What does this Japanese alert mean?</h1>
         <p className="mt-4 max-w-2xl text-lg font-medium text-foreground sm:text-xl">Japan emergency alert decoder: earthquake, tsunami, Level 1-5 warnings, evacuation, J-ALERT</p>
         <p className="mt-2 max-w-2xl text-base leading-relaxed text-muted sm:text-lg">
-          Paste the alert your phone, TV or app showed (Japanese or English). Get what it is, the alert level, what to do right now where you are, and its official name in 14 languages. Includes the new level-named warnings that started on May 29, 2026.
+          This free Japan emergency alert decoder (translator) explains it: paste the alert your phone, TV or app showed (Japanese or English) and get what it is, the alert level, what to do right now where you are, and its official name in 14 languages. Includes the new level-named warnings that started on May 29, 2026.
         </p>
       </section>
 
